@@ -24,12 +24,19 @@ public class Product {
     @Column(precision=10, scale=2)
     private BigDecimal price;
     private int quantity;
+    @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
     public Product(String name, BigDecimal price, int quantity) {
         setName(name);
         setPrice(price);
         setQuantity(quantity);
+        this.status = ProductStatus.AVAILABLE;
+    }
+    public Product(String name, BigDecimal price) {
+        setName(name);
+        setPrice(price);
+        this.quantity = 0;
         this.status = ProductStatus.AVAILABLE;
     }
 
