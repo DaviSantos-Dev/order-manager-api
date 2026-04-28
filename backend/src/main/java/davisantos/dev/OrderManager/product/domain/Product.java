@@ -33,12 +33,6 @@ public class Product {
         setQuantity(quantity);
         this.status = ProductStatus.AVAILABLE;
     }
-    public Product(String name, BigDecimal price) {
-        setName(name);
-        setPrice(price);
-        this.quantity = 0;
-        this.status = ProductStatus.AVAILABLE;
-    }
 
     public void setName(String name) {
         if(name == null || name.isEmpty()) {
