@@ -22,9 +22,10 @@ public class ProductService {
         this.repository = productRepository;
     }
 
-    public void create(CreateProductDTO dto) {
+    public ProductResponseDTO create(CreateProductDTO dto) {
         Product product = new Product(dto.getName(), dto.getPrice(), dto.getQuantity());
-        repository.save(product);
+        ProductResponseDTO response = new ProductResponseDTO(repository.save(product));
+        return response;
     }
 
     public ProductResponseDTO findById(Long id) {
@@ -40,12 +41,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(Long id, UpdateProductDTO dto) {
+    public ProductResponseDTO update(Long id, UpdateProductDTO dto) {
         Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
 
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
 
+        return new ProductResponseDTO(product);
     }
 
     @Transactional
