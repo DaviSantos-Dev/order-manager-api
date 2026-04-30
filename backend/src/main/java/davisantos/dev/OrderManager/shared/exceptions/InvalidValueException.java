@@ -1,4 +1,4 @@
-package davisantos.dev.OrderManager.product.domain.exceptions;
+package davisantos.dev.OrderManager.shared.exceptions;
 
 public class InvalidValueException extends RuntimeException {
     public InvalidValueException(String message) {

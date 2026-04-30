@@ -51,6 +51,4 @@ public class ProductController {
     public void deleteProduct(@PathVariable Long id) {
         service.softDeleteById(id);
     }
-
-
 }

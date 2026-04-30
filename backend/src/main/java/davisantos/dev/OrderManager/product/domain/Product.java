@@ -1,8 +1,8 @@
 package davisantos.dev.OrderManager.product.domain;
 
 import davisantos.dev.OrderManager.product.domain.enums.ProductStatus;
-import davisantos.dev.OrderManager.product.domain.exceptions.InvalidStateException;
-import davisantos.dev.OrderManager.product.domain.exceptions.InvalidValueException;
+import davisantos.dev.OrderManager.shared.exceptions.InvalidStateException;
+import davisantos.dev.OrderManager.shared.exceptions.InvalidValueException;
 import jakarta.persistence.*;
 
 import lombok.AccessLevel;
