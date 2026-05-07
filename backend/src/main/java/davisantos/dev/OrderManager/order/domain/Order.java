@@ -3,8 +3,10 @@ package davisantos.dev.OrderManager.order.domain;
 import davisantos.dev.OrderManager.order.domain.enums.OrderStatus;
 import davisantos.dev.OrderManager.order.domain.exceptions.EmptyOrderException;
 import davisantos.dev.OrderManager.product.domain.Product;
+import davisantos.dev.OrderManager.order.domain.exceptions.OrderItemNotFoundException;
 import davisantos.dev.OrderManager.shared.exceptions.InvalidStateException;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor (access = AccessLevel.PROTECTED )
 public class Order {
 
     @Id
@@ -22,13 +24,13 @@ public class Order {
     private Long id;
     private String client;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     public Order(String client) {
         this.client = client;
         this.status = OrderStatus.PENDING;
-        this.orderItems = new ArrayList<>();
     }
 
     public void addItem(Product product, int quantity) {
@@ -40,6 +42,12 @@ public class Order {
     public void removeItem(OrderItem orderItem) {
         orderItems.remove(orderItem);
         orderItem.setOrder(null);
+    }
+
+    public OrderItem findItemById(Long id){
+        OrderItem item = orderItems.stream().filter(
+                orderItem -> orderItem.getId().equals(id)).findFirst().orElseThrow(() -> new OrderItemNotFoundException("Item not found"));
+        return item;
     }
 
     public BigDecimal calculateTotal() {

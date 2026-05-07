@@ -1,7 +1,6 @@
 package davisantos.dev.OrderManager.order.domain;
 
 import davisantos.dev.OrderManager.product.domain.Product;
-import davisantos.dev.OrderManager.order.domain.Order;
 import davisantos.dev.OrderManager.shared.exceptions.InvalidValueException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,7 +31,6 @@ public class OrderItem {
 
     public OrderItem(Product product, int quantity) {
         setProduct(product);
-        this.unitPrice = product.getPrice();
         setQuantity(quantity);
     }
 
@@ -41,6 +39,7 @@ public class OrderItem {
             throw new InvalidValueException("Product cannot be null");
         }
         this.product = product;
+        this.unitPrice = product.getPrice();
     }
 
     public void setQuantity(int quantity) {
