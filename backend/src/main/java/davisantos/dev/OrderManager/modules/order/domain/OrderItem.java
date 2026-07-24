@@ -3,54 +3,34 @@ package davisantos.dev.OrderManager.modules.order.domain;
 import davisantos.dev.OrderManager.modules.product.domain.Product;
 import davisantos.dev.OrderManager.shared.exceptions.InvalidValueException;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
-@NoArgsConstructor
+@Setter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
-
     @ManyToOne
     @JoinColumn(name="product_id")
+    @EqualsAndHashCode.Include
     private Product product;
-
-    @Column(precision=19, scale=2)
-    private BigDecimal unitPrice;
-
-    @Column(precision=19, scale=2)
-    private BigDecimal totalPrice;
-    private int quantity;
-
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
-
-    public OrderItem(Product product, int quantity) {
-        setProduct(product);
-        setQuantity(quantity);
-    }
-
-    private void setProduct(Product product) {
-        if (product == null) {
-            throw new InvalidValueException("Product cannot be null");
-        }
-        this.product = product;
-        this.unitPrice = product.getPrice();
-    }
-
-    public void setQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new InvalidValueException("Quantity must be greater than zero.");
-        }
-        this.quantity = quantity;
-    }
+    @Column(precision=19, scale=2, nullable=false)
+    private BigDecimal unitPrice;
+    @Column(nullable=false)
+    private int quantity;
 
     // Nível de Acesso Default (Somente o mesmo pacote)
     void setOrder(Order order) {

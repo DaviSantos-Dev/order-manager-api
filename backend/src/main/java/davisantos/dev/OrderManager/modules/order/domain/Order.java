@@ -10,7 +10,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class Order {
     @Column(nullable = false)
     private String client;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private Set<OrderItem> orderItems = new HashSet<>();
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
