@@ -22,8 +22,7 @@ public class ProductService {
 
     public ProductResponseDTO create(CreateProductDTO dto) {
         Product product = Product.builder().name(dto.getName()).price(dto.getPrice()).quantity(dto.getQuantity()).build();
-        ProductResponseDTO response = new ProductResponseDTO(repository.save(product));
-        return response;
+        return new ProductResponseDTO(repository.save(product));
     }
 
     @Transactional(readOnly = true)
