@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor (access = AccessLevel.PROTECTED)
 @AllArgsConstructor (access = AccessLevel.PRIVATE)
@@ -31,14 +32,14 @@ public class Product {
     private ProductStatus status;
     private boolean active;
 
-    public void setAvailable(){
+    private void setAvailable(){
         if (this.quantity <= 0){
             throw new InvalidStateException("Product cannot be available without stock");
         }
         this.status = ProductStatus.AVAILABLE;
     }
 
-    public void setUnavailable(){
+    private void setUnavailable(){
         if (this.quantity > 0){
             throw new InvalidStateException("Product cannot be unavailable having stock");
         }
@@ -49,13 +50,16 @@ public class Product {
     }
 
     public void deactivateProduct(){
-        this.active = false;
-    }
-    public void activateProduct(){
+        if (!active){
+            throw new InvalidStateException("This product is already deactivated");
+        }
         this.active = false;
     }
 
     public void increaseQuantity(int quantity) {
+        if (!active){
+            throw new InvalidStateException("This product is deactivated");
+        }
         if (quantity <= 0){
             throw new InvalidValueException("The increased quantity must be grater than zero");
         }
@@ -66,6 +70,9 @@ public class Product {
     }
 
     public void decreaseQuantity(int quantity) {
+        if (!active){
+            throw new InvalidStateException("This product is deactivated");
+        }
         if (quantity <= 0){
             throw new InvalidValueException("The decreased quantity must be greater than zero");
         }

@@ -1,38 +1,38 @@
 package davisantos.dev.OrderManager.modules.product.service;
 
 import davisantos.dev.OrderManager.modules.product.domain.Product;
-import davisantos.dev.OrderManager.modules.product.domain.exceptions.ProductNotFoundException;
 import davisantos.dev.OrderManager.modules.product.dto.CreateProductDTO;
 import davisantos.dev.OrderManager.modules.product.dto.ProductResponseDTO;
 import davisantos.dev.OrderManager.modules.product.dto.UpdateProductDTO;
 import davisantos.dev.OrderManager.modules.product.repository.ProductRepository;
 
+import davisantos.dev.OrderManager.shared.exceptions.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-
+@RequiredArgsConstructor
+@Transactional
 public class ProductService {
 
     private final ProductRepository repository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.repository = productRepository;
-    }
-
     public ProductResponseDTO create(CreateProductDTO dto) {
-        Product product = new Product(dto.getName(), dto.getPrice(), dto.getQuantity());
+        Product product = Product.builder().name(dto.getName()).price(dto.getPrice()).quantity(dto.getQuantity()).build();
         ProductResponseDTO response = new ProductResponseDTO(repository.save(product));
         return response;
     }
 
+    @Transactional(readOnly = true)
     public ProductResponseDTO findById(Long id) {
-        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
+        Product product = repository.findById(id).orElseThrow(() -> new NotFoundException("Error: Product not found"));
         return new ProductResponseDTO(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponseDTO> findAll() {
         return repository.findAll()
                 .stream()
@@ -40,9 +40,8 @@ public class ProductService {
                 .toList();
     }
 
-    @Transactional
     public ProductResponseDTO update(Long id, UpdateProductDTO dto) {
-        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
+        Product product = repository.findById(id).orElseThrow(() -> new NotFoundException("Error: Product not found"));
 
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
@@ -50,23 +49,21 @@ public class ProductService {
         return new ProductResponseDTO(product);
     }
 
-    @Transactional
     public void softDeleteById(Long id) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
-        product.setDisabled();
+                .orElseThrow(() -> new NotFoundException("Error: Product not found"));
+        product.deactivateProduct();
     }
 
-    @Transactional
     public void increaseStock(Long id, int quantity) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
+                .orElseThrow(() -> new NotFoundException("Error: Product not found"));
         product.increaseQuantity(quantity);
     }
-    @Transactional
+    
     public void decreaseStock(Long id, int quantity) {
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Error: Product not found"));
+                .orElseThrow(() -> new NotFoundException("Error: Product not found"));
         product.decreaseQuantity(quantity);
     }
 }
