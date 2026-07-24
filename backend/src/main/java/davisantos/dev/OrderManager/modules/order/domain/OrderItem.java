@@ -23,6 +23,9 @@ public class OrderItem {
 
     @Column(precision=19, scale=2)
     private BigDecimal unitPrice;
+
+    @Column(precision=19, scale=2)
+    private BigDecimal totalPrice;
     private int quantity;
 
     @ManyToOne
