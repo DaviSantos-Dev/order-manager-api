@@ -1,9 +1,8 @@
 package davisantos.dev.OrderManager.modules.product.service;
 
 import davisantos.dev.OrderManager.modules.product.domain.Product;
-import davisantos.dev.OrderManager.modules.product.dto.CreateProductDTO;
-import davisantos.dev.OrderManager.modules.product.dto.ProductResponseDTO;
-import davisantos.dev.OrderManager.modules.product.dto.UpdateProductDTO;
+import davisantos.dev.OrderManager.modules.product.dto.*;
+import davisantos.dev.OrderManager.modules.product.mapper.ProductMapper;
 import davisantos.dev.OrderManager.modules.product.repository.ProductRepository;
 
 import davisantos.dev.OrderManager.shared.exceptions.NotFoundException;
@@ -19,33 +18,35 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final ProductMapper mapper;
 
-    public ProductResponseDTO create(CreateProductDTO dto) {
-        Product product = Product.builder().name(dto.getName()).price(dto.getPrice()).quantity(dto.getQuantity()).build();
-        return new ProductResponseDTO(repository.save(product));
+    public ProductResponse create(ProductRequest dto) {
+        /*Product product = Product.builder().name(dto.getName()).price(dto.getPrice()).quantity(dto.getQuantity()).build();*/
+        return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
     @Transactional(readOnly = true)
-    public ProductResponseDTO findById(Long id) {
+    public ProductResponse findById(Long id) {
         Product product = repository.findById(id).orElseThrow(() -> new NotFoundException("Error: Product not found"));
-        return new ProductResponseDTO(product);
+        return mapper.toDto(product);
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> findAll() {
+    public List<ProductResponse> findAll() {
         return repository.findAll()
                 .stream()
-                .map(ProductResponseDTO::new)
+                .map(mapper::toDto)
                 .toList();
     }
 
-    public ProductResponseDTO update(Long id, UpdateProductDTO dto) {
-        Product product = repository.findById(id).orElseThrow(() -> new NotFoundException("Error: Product not found"));
+    public ProductResponse update(Long id, ProductRequest dto) {
+        Product product = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Error: Product not found"));
 
-        product.setName(dto.getName());
-        product.setPrice(dto.getPrice());
+        product.setName(dto.name());
+        product.setPrice(dto.price());
 
-        return new ProductResponseDTO(product);
+        return mapper.toDto(product);
     }
 
     public void softDeleteById(Long id) {

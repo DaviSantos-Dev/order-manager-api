@@ -1,10 +1,9 @@
 package davisantos.dev.OrderManager.modules.product.controller;
 
-import davisantos.dev.OrderManager.modules.product.dto.CreateProductDTO;
-import davisantos.dev.OrderManager.modules.product.dto.ProductResponseDTO;
-import davisantos.dev.OrderManager.modules.product.dto.UpdateProductDTO;
+import davisantos.dev.OrderManager.modules.product.dto.*;
 import davisantos.dev.OrderManager.modules.product.service.ProductService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -14,41 +13,39 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private ProductService service;
 
-    public ProductController(ProductService service) {
-        this.service = service;
-    }
-
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody CreateProductDTO dto) {
-        ProductResponseDTO product =  service.create(dto);
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest dto) {
+        ProductResponse product = service.create(dto);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.id()).toUri();
 
         return ResponseEntity.created(uri).body(product);
     }
 
     @GetMapping
-    public List<ProductResponseDTO> findAll() {
-        return service.findAll();
+    public ResponseEntity<List<ProductResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ProductResponseDTO findById(@PathVariable Long id) {
-        return service.findById(id);
+    public ResponseEntity<ProductResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id,@Valid @RequestBody UpdateProductDTO dto) {
-        ProductResponseDTO response = service.update(id, dto);
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,@Valid @RequestBody ProductRequest dto) {
+        ProductResponse response = service.update(id, dto);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         service.softDeleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
