@@ -27,7 +27,7 @@ public class Product {
     private String name;
     @Column(precision=10, scale=2,  nullable=false)
     private BigDecimal price;
-    private int quantity = 0;
+    private int quantity;
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
     private boolean active;
