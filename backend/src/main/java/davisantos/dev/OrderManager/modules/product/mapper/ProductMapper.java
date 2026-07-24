@@ -10,5 +10,5 @@ public interface ProductMapper{
 
     Product toEntity(ProductRequest dto);
 
-    ProductResponse toDto(Product dto);
+    ProductResponse toDto(Product product);
 }

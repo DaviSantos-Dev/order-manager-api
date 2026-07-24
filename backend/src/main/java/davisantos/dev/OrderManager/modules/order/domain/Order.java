@@ -36,7 +36,7 @@ public class Order {
     private OrderStatus status;
 
     public void addItem(Product product, int quantity) {
-        OrderItem orderItem = new OrderItem(product, quantity);
+        OrderItem orderItem = OrderItem.builder().product(product).quantity(quantity).build();
         orderItem.setOrder(this);
         this.orderItems.add(orderItem);
     }
