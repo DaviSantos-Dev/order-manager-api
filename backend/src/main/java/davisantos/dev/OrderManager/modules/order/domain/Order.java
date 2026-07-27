@@ -29,27 +29,23 @@ public class Order {
     private Long id;
     @Column(nullable = false)
     private String client;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
     private Set<OrderItem> orderItems = new HashSet<>();
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
 
-    public void addItem(Product product, int quantity) {
-        OrderItem orderItem = OrderItem.builder().product(product).quantity(quantity).build();
-        orderItem.setOrder(this);
-        this.orderItems.add(orderItem);
+    public void addItem(OrderItem item) {
+        this.orderItems.add(item);
     }
 
     public void removeItem(OrderItem orderItem) {
         orderItems.remove(orderItem);
-        orderItem.setOrder(null);
-    }
-
-    public OrderItem findItemById(Long id){
-        OrderItem item = orderItems.stream().filter(
-                orderItem -> orderItem.getId().equals(id)).findFirst().orElseThrow(() -> new NotFoundException("Item not found"));
-        return item;
     }
 
     public BigDecimal calculateTotal() {
@@ -83,7 +79,7 @@ public class Order {
         this.status = OrderStatus.CANCELLED;
     }
 
-    public void reOpenOrder(){
+    public void reopenOrder(){
         if (this.status == OrderStatus.PAID) {
             throw new InvalidStateException("Order has been paid");
         }

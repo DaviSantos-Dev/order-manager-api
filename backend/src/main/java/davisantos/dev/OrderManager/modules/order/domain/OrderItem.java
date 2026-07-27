@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Table(name = "order_item_tb")
 public class OrderItem {
 
     @Id
@@ -24,18 +25,13 @@ public class OrderItem {
     @JoinColumn(name="product_id")
     @EqualsAndHashCode.Include
     private Product product;
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
     @Column(precision=19, scale=2, nullable=false)
     private BigDecimal unitPrice;
     @Column(nullable=false)
     private int quantity;
-
-    // Nível de Acesso Default (Somente o mesmo pacote)
-    void setOrder(Order order) {
-        this.order = order;
-    }
 
     public BigDecimal calculateSubTotal(){
         if (unitPrice == null) {

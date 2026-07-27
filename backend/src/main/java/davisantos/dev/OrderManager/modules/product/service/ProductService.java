@@ -21,7 +21,6 @@ public class ProductService {
     private final ProductMapper mapper;
 
     public ProductResponse create(ProductRequest dto) {
-        /*Product product = Product.builder().name(dto.getName()).price(dto.getPrice()).quantity(dto.getQuantity()).build();*/
         return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
