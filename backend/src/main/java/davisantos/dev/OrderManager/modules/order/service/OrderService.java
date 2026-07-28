@@ -52,21 +52,21 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderItemResponse> findOrderItemsByOrder(Long orderId){
+    public List<OrderItemResponse> findOrderItemsByOrderId(Long orderId){
         return orderItemRepository.findAllByOrderId(orderId)
                 .stream()
                 .map(orderItemMapper::toDto)
                 .toList();
     }
 
-    public void delete(Long id){
+    public void deleteOrder(Long id){
         orderRepository.deleteById(id);
     }
 
-    public OrderItemResponse addItem(OrderItemRequest dto){
+    public OrderItemResponse addItem(Long orderId, OrderItemRequest dto){
         Product product = productRepository.findById(dto.productId())
                 .orElseThrow(() -> new NotFoundException("Product Not Found"));
-        Order order = orderRepository.findById(dto.orderId())
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order Not Found"));
 
         OrderItem orderItem = OrderItem.builder()
@@ -80,10 +80,10 @@ public class OrderService {
         return orderItemMapper.toDto(orderItem);
     }
 
-    public void removeItem(Long orderItemId, OrderItemRequest dto){
-        Order order = orderRepository.findById(dto.orderId())
+    public void removeItem(Long itemId, Long orderId){
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order Not Found"));
-        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+        OrderItem orderItem = orderItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item Not Found"));
 
         if (!orderItem.getOrder().equals(order)){
@@ -93,10 +93,10 @@ public class OrderService {
         orderItemRepository.delete(orderItem);
     }
 
-    public OrderItemResponse updateItem(Long orderItemId, OrderItemRequest dto){
-        Order order = orderRepository.findById(dto.orderId())
+    public OrderItemResponse updateItem(Long orderId, Long itemId, OrderItemRequest dto){
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Order Not Found"));
-        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+        OrderItem orderItem = orderItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item Not Found"));
         Product product = productRepository.findById(dto.productId())
                 .orElseThrow(() -> new NotFoundException("Product Not Found"));
