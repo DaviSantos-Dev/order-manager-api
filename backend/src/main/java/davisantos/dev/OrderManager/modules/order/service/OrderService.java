@@ -13,6 +13,8 @@ import davisantos.dev.OrderManager.modules.order.repository.OrderItemRepository;
 import davisantos.dev.OrderManager.modules.order.repository.OrderRepository;
 import davisantos.dev.OrderManager.modules.product.domain.Product;
 import davisantos.dev.OrderManager.modules.product.repository.ProductRepository;
+import davisantos.dev.OrderManager.modules.user.domain.User;
+import davisantos.dev.OrderManager.modules.user.repository.UserRepository;
 import davisantos.dev.OrderManager.shared.exceptions.BusinessException;
 import davisantos.dev.OrderManager.shared.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +31,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
     public OrderResponse create(OrderRequest dto){
-        //Será transformado em consulta ao Repository da entidade cliente quando o mesmo for implementado
-        String client = dto.clientId().toString();
+        User client = userRepository.findById(dto.clientId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
         Order order = Order.builder().client(client).status(OrderStatus.PENDING).build();
         return orderMapper.toDto(orderRepository.save(order));
     }
