@@ -1,10 +1,8 @@
 package davisantos.dev.OrderManager.modules.user.domain;
 
-import davisantos.dev.OrderManager.modules.order.domain.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
 
 @Getter
 @Setter
