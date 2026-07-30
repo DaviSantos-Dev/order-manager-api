@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "order_item_tb")
+@Table(name = "order_items_tb")
 public class OrderItem {
 
     @Id

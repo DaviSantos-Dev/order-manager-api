@@ -17,6 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor (access = AccessLevel.PRIVATE)
 @EqualsAndHashCode (onlyExplicitlyIncluded = true)
 @Entity
+@Table(name = "products_tb")
 public class Product {
 
     @Id

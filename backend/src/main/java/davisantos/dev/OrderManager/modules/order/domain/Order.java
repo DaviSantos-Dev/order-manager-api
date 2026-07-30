@@ -2,16 +2,13 @@ package davisantos.dev.OrderManager.modules.order.domain;
 
 import davisantos.dev.OrderManager.modules.order.domain.enums.OrderStatus;
 import davisantos.dev.OrderManager.modules.order.domain.exceptions.EmptyOrderException;
-import davisantos.dev.OrderManager.modules.product.domain.Product;
+import davisantos.dev.OrderManager.modules.user.domain.User;
 import davisantos.dev.OrderManager.shared.exceptions.InvalidStateException;
-import davisantos.dev.OrderManager.shared.exceptions.NotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,19 +18,20 @@ import java.util.Set;
 @AllArgsConstructor (access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Table(name = "orders_tb")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-    @Column(nullable = false)
-    private String client;
+    @ManyToOne
+    private User client;
     @OneToMany(
             mappedBy = "order",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private Set<OrderItem> orderItems = new HashSet<>();
     @Enumerated(EnumType.STRING)
