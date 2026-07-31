@@ -35,7 +35,7 @@ public class OrderItem {
 
     public BigDecimal calculateSubTotal(){
         if (unitPrice == null) {
-            throw new InvalidValueException("Product cannot be null.");
+            throw new InvalidValueException("Product price cannot be null.");
         }
         return this.unitPrice.multiply(BigDecimal.valueOf(this.quantity));
     }

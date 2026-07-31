@@ -8,6 +8,7 @@ public record OrderItemResponse(
         Long id,
         ProductResponse product,
         BigDecimal unitPrice,
+        BigDecimal subTotal,
         int quantity
 ) {
 }

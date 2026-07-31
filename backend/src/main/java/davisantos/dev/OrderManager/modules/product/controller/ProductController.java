@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController implements GenericController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest dto) {

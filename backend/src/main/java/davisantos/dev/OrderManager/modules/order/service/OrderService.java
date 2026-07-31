@@ -90,7 +90,7 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Item Not Found"));
 
         if (!orderItem.getOrder().equals(order)){
-            throw new BusinessException("Error: This item not correspond to this order");
+            throw new BusinessException("This item doesn't match this order");
         }
         order.removeItem(orderItem);
         orderItemRepository.delete(orderItem);
@@ -105,12 +105,43 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Product Not Found"));
 
         if (!orderItem.getOrder().equals(order)){
-            throw new BusinessException("Error: This item not correspond to this order");
+            throw new BusinessException("This item doesn't match this order");
         }
         orderItem.setQuantity(dto.quantity());
         orderItem.setProduct(product);
         orderItem.setUnitPrice(product.getPrice());
 
         return orderItemMapper.toDto(orderItem);
+    }
+
+    public OrderResponse payOrder(Long orderId){
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Order Not Found"));
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
+
+        orderItems.forEach(orderItem -> {
+            orderItem.getProduct()
+                    .decreaseQuantity(orderItem.getQuantity());
+        });
+        order.payOrder();
+        return orderMapper.toDto(order);
+    }
+
+    public OrderResponse cancelOrder(Long id){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order Not Found"));
+
+        order.cancelOrder();
+
+        return orderMapper.toDto(order);
+    }
+
+    public OrderResponse reopenOrder(Long id){
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order Not Found"));
+
+        order.reopenOrder();
+
+        return orderMapper.toDto(order);
     }
 }

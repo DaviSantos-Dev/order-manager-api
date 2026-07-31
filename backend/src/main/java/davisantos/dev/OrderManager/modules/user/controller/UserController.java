@@ -4,6 +4,7 @@ import davisantos.dev.OrderManager.modules.user.dto.UserRequest;
 import davisantos.dev.OrderManager.modules.user.dto.UserResponse;
 import davisantos.dev.OrderManager.modules.user.service.UserService;
 import davisantos.dev.OrderManager.shared.utils.GenericController;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,13 @@ public class UserController implements GenericController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest dto) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest dto) {
         UserResponse response = userService.create(dto);
         return ResponseEntity.created(generateUri(response.id())).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest dto) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest dto) {
         return ResponseEntity.ok(userService.update(id, dto));
     }
 
