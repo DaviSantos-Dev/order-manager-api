@@ -47,6 +47,9 @@ public class Order {
     }
 
     public BigDecimal calculateTotal() {
+        if (orderItems == null || orderItems.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem orderItem : orderItems) {
             total = total.add(orderItem.calculateSubTotal());

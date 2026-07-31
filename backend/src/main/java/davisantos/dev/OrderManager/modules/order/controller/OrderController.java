@@ -42,7 +42,7 @@ public class OrderController implements GenericController {
     }
 
     @PostMapping("/{orderId}/items")
-    public ResponseEntity<OrderItemResponse> addOrderItem(@PathVariable Long orderId, @Valid OrderItemRequest dto){
+    public ResponseEntity<OrderItemResponse> addOrderItem(@PathVariable Long orderId, @Valid @RequestBody OrderItemRequest dto){
         OrderItemResponse response = orderService.addItem(orderId, dto);
         return ResponseEntity.created(generateUri(response.id())).body(response);
     }
@@ -64,4 +64,18 @@ public class OrderController implements GenericController {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<OrderResponse> payOrder(@PathVariable Long orderId){
+        return ResponseEntity.ok(orderService.payOrder(orderId));
+    }
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long orderId){
+        return ResponseEntity.ok(orderService.cancelOrder(orderId));
+    }
+    @PostMapping("/{orderId}/reopen")
+    public ResponseEntity<OrderResponse> reopenOrder(@PathVariable Long orderId){
+        return ResponseEntity.ok(orderService.reopenOrder(orderId));
+    }
+
 }

@@ -1,6 +1,7 @@
 package davisantos.dev.OrderManager.modules.product.service;
 
 import davisantos.dev.OrderManager.modules.product.domain.Product;
+import davisantos.dev.OrderManager.modules.product.domain.enums.ProductStatus;
 import davisantos.dev.OrderManager.modules.product.dto.*;
 import davisantos.dev.OrderManager.modules.product.mapper.ProductMapper;
 import davisantos.dev.OrderManager.modules.product.repository.ProductRepository;
@@ -21,7 +22,17 @@ public class ProductService {
     private final ProductMapper mapper;
 
     public ProductResponse create(ProductRequest dto) {
-        return mapper.toDto(repository.save(mapper.toEntity(dto)));
+        return mapper.toDto(
+            repository.save(
+                Product.builder()
+                        .name(dto.name())
+                        .price(dto.price())
+                        .quantity(dto.quantity())
+                        .active(true)
+                        .status(ProductStatus.AVAILABLE)
+                        .build()
+            )
+        );
     }
 
     @Transactional(readOnly = true)

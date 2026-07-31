@@ -1,12 +1,11 @@
 package davisantos.dev.OrderManager.modules.order.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public record OrderRequest(
-        @NotEmpty
-        Long clientId,
-        List<OrderItemRequest> orderItems
+        @NotNull
+        Long clientId
 ) {
 }

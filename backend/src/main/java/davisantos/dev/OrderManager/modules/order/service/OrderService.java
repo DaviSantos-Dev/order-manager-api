@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -38,7 +39,11 @@ public class OrderService {
     public OrderResponse create(OrderRequest dto){
         User client = userRepository.findById(dto.clientId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        Order order = Order.builder().client(client).status(OrderStatus.PENDING).build();
+        Order order = Order.builder()
+                .client(client)
+                .status(OrderStatus.PENDING)
+                .orderItems(new HashSet<>())
+                .build();
         return orderMapper.toDto(orderRepository.save(order));
     }
 
